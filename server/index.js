@@ -23,6 +23,19 @@ const authRoutes=require('./routes/authRotutes');
 app.use('/api/auth',authRoutes);
 
 
+const phieuYeuCauRoutes = require('./routes/phieuYeuCauRoutes');
+app.use('/api/phieu-yeu-cau', phieuYeuCauRoutes);
+
+const chuXuongRoutes = require('./routes/chuXuongRoutes');
+app.use('/api/chu-xuong', chuXuongRoutes);
+
+const thoKyThuatRoutes = require('./routes/thoKyThuatRoutes');
+app.use('/api/tho', thoKyThuatRoutes);
+
+const keToanRoutes = require('./routes/keToanRoutes');
+app.use('/api/ke-toan', keToanRoutes);
+
+
 // 4. CÁC ĐƯỜNG DẪN API (ROUTES)
 app.get('/api/data', (req, res) => {
     res.json({ message: "Xin chào từ Backend Node.js!" });

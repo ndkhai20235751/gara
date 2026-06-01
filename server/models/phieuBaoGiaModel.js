@@ -1,4 +1,4 @@
-﻿const { supabase } = require('../config/superbase');
+const { supabase } = require('../config/superbase');
 
 const PhieuBaoGiaModel = {
   getAll: async () => {
@@ -11,11 +11,43 @@ const PhieuBaoGiaModel = {
     if (error) throw error;
     return data[0];
   },
-  updateStatus: async (id, trangThai) => {
-    const { data, error } = await supabase.from('phieu_bao_gia').update({ trang_thai: trangThai }).eq('id', id).select();
+  getAllWithJoin: async () => {
+    const { data, error } = await supabase
+      .from('phieu_bao_gia')
+      .select(`
+        *,
+        ke_toan(hoten),
+        phieu_bao_kham(
+          mabaokham,
+          lenh_sua_chua(
+            malenh,
+            phieu_yeu_cau(mayeucau, modelmay, motaloi, vitricongtruong, trangthai,
+              khach_hang(tencongty, sodienthoai))
+          )
+        )
+      `)
+      .order('thoigiandapung', { ascending: false });
+    if (error) throw error;
+    return data;
+  },
+  updateStatus: async (mabaogia, trangthai) => {
+    const { data, error } = await supabase
+      .from('phieu_bao_gia')
+      .update({ trangthai })
+      .eq('mabaogia', mabaogia)
+      .select();
     if (error) throw error;
     return data[0];
-  }
+  },
+  updateChiPhi: async (mabaogia, chiPhi) => {
+    const { data, error } = await supabase
+      .from('phieu_bao_gia')
+      .update(chiPhi)
+      .eq('mabaogia', mabaogia)
+      .select();
+    if (error) throw error;
+    return data[0];
+  },
 };
 
 module.exports = PhieuBaoGiaModel;

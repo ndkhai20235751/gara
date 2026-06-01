@@ -23,7 +23,7 @@ async function hashTatCaMatKhau() {
       const { error: updateErr } = await supabase
         .from('nguoi_dung')
         .update({ matkhau: hash })
-        .eq('id', user.id);
+        .eq('manguoidung', user.manguoidung);
 
       if (updateErr) {
         console.log(`  → ❌ Cập nhật thất bại: ${updateErr.message}`);

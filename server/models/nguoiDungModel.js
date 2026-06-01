@@ -18,7 +18,16 @@ const NguoiDungModel = {
   // Tạo mới người dùng
   create: async (userData) => {
     const { data, error } = await supabase.from('nguoi_dung').insert([userData]).select();
-    if (error) throw error;
+    if (error) {
+      // Sequence bị lệch → tự reset rồi thử lại
+      if (error.code === '23505' && error.message.includes('pk_nguoi_dung')) {
+        await supabase.rpc('reset_nguoi_dung_sequence');
+        const { data: data2, error: error2 } = await supabase.from('nguoi_dung').insert([userData]).select();
+        if (error2) throw error2;
+        return data2[0];
+      }
+      throw error;
+    }
     return data[0];
   },
   

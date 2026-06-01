@@ -20,7 +20,16 @@ const ThoKyThuatModel = {
     const { data, error } = await supabase.from('tho_ky_thuat').update(updateData).eq('id', id).select();
     if (error) throw error;
     return data[0];
-  }
+  },
+  getByMaNguoiDung: async (manguoidung) => {
+    const { data, error } = await supabase
+      .from('tho_ky_thuat')
+      .select('*')
+      .eq('manguoidung', manguoidung)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
 };
 
 module.exports = ThoKyThuatModel;

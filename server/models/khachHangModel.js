@@ -7,7 +7,17 @@ const KhachHangModel = {
     return data;
   },
   getById: async (id) => {
-    const { data, error } = await supabase.from('khach_hang').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('khach_hang').select('*').eq('makhachhang', id).single();
+    if (error) throw error;
+    return data;
+  },
+
+  getByMaNguoiDung: async (manguoidung) => {
+    const { data, error } = await supabase
+      .from('khach_hang')
+      .select('makhachhang')
+      .eq('manguoidung', manguoidung)
+      .maybeSingle();
     if (error) throw error;
     return data;
   },

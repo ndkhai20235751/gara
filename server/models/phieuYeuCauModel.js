@@ -20,12 +20,12 @@ const PhieuYeuCauModel = {
     return data[0];
   },
 
-  getByKhachHang: async (makh) => {
+  getByKhachHang: async (makhachhang) => {
     const { data, error } = await supabase
       .from('phieu_yeu_cau')
       .select('*')
-      .eq('makh', makh)
-      .order('ngaytao', { ascending: false });
+      .eq('makhachhang', makhachhang)
+      .order('thoigiangui', { ascending: false });
     if (error) throw error;
     return data;
   },

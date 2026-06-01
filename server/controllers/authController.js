@@ -1,6 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const NguoiDungModel = require('../models/nguoiDungModel');
+const NguoiDungModel  = require('../models/nguoiDungModel');
+const KhachHangModel  = require('../models/khachHangModel');
+const ChuXuongModel   = require('../models/chuXuongModel');
+const ThoKyThuatModel = require('../models/thoModel');
+const KeToanModel     = require('../models/keToanModel');
 
 
 
@@ -56,11 +60,18 @@ const authController ={
                     message: 'Email hoặc mật khẩu không đúng',
                 })
             }
+            let makhachhang = null;
+            if (nguoiDung.vaitro === 'khachhang') {
+                const kh = await KhachHangModel.getByMaNguoiDung(nguoiDung.manguoidung);
+                makhachhang = kh?.makhachhang || null;
+            }
+
             const token=jwt.sign(
                 {
                     id:nguoiDung.manguoidung,
                     email:nguoiDung.email,
                     vaitro:nguoiDung.vaitro,
+                    makhachhang,
                 },
                 process.env.JWT_SECRET,
                 { expiresIn: '8h' }
@@ -85,6 +96,73 @@ const authController ={
         message: 'Lỗi hệ thống, vui lòng thử lại',
       });
     }
+    },
+    dangKy: async (req, res) => {
+        try {
+            const { hoten, sodienthoai, email, matkhau, vaitro } = req.body;
+
+            const VAITRO_HOP_LE = ['khachhang', 'chuxuong', 'thokythuat', 'ketoan'];
+            if (!hoten || !sodienthoai || !email || !matkhau || !vaitro) {
+                return res.status(400).json({ success: false, message: 'Vui lòng điền đầy đủ thông tin' });
+            }
+            if (!VAITRO_HOP_LE.includes(vaitro)) {
+                return res.status(400).json({ success: false, message: 'Vai trò không hợp lệ' });
+            }
+
+            const nguoiDungCu = await NguoiDungModel.getByEmail(email);
+            if (nguoiDungCu) {
+                return res.status(409).json({ success: false, message: 'Email này đã được đăng ký' });
+            }
+
+            const hash = await bcrypt.hash(matkhau, 10);
+
+            const nguoiDungMoi = await NguoiDungModel.create({
+                tendangnhap: hoten,
+                matkhau: hash,
+                vaitro,
+                trangthaitaikhoan: 'true',
+                email,
+            });
+
+            // Tạo hồ sơ trong bảng riêng theo từng vai trò
+            const manguoidung = nguoiDungMoi.manguoidung;
+            if (vaitro === 'khachhang') {
+                await KhachHangModel.create({
+                    manguoidung,
+                    tencongty: hoten,
+                    sodienthoai,
+                    email,
+                    diachi: '',
+                });
+            } else if (vaitro === 'chuxuong') {
+                await ChuXuongModel.create({
+                    manguoidung,
+                    hoten,
+                    sodienthoai,
+                    email,
+                });
+            } else if (vaitro === 'thokythuat') {
+                await ThoKyThuatModel.create({
+                    manguoidung,
+                    hoten,
+                    sodienthoai,
+                    vitrihientai: '',
+                    trangthai: 'Rảnh',
+                });
+            } else if (vaitro === 'ketoan') {
+                await KeToanModel.create({
+                    manguoidung,
+                    hoten,
+                    sodienthoai,
+                    email,
+                });
+            }
+
+            return res.status(201).json({ success: true, message: 'Đăng ký thành công' });
+        } catch (error) {
+            console.error('Lỗi đăng ký:', error);
+            return res.status(500).json({ success: false, message: 'Lỗi hệ thống: ' + error.message });
+        }
     },
 };
 module.exports=authController;
