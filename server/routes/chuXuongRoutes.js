@@ -7,6 +7,7 @@ router.get('/yeu-cau',                          xacThucToken, chuXuongController
 router.get('/danh-sach-tho',                    xacThucToken, chuXuongController.layDanhSachTho);
 router.get('/lenh',                             xacThucToken, chuXuongController.layTatCaLenh);
 router.get('/bao-gia',                          xacThucToken, chuXuongController.layBaoGia);
+router.get('/bao-gia/:mabaogia',                 xacThucToken, chuXuongController.layChiTietBaoGia);
 router.post('/duyet',                           xacThucToken, chuXuongController.duyetVaPhanCong);
 router.patch('/tuchoi/:mayeucau',               xacThucToken, chuXuongController.tuChoi);
 router.patch('/cap-nhat/:mayeucau',             xacThucToken, chuXuongController.capNhatTrangThai);

@@ -138,6 +138,26 @@ const chuXuongController = {
     }
   },
 
+  // GET /api/chu-xuong/bao-gia/:mabaogia — Chi tiết báo giá kèm noidung
+  layChiTietBaoGia: async (req, res) => {
+    try {
+      const { mabaogia } = req.params;
+      const chiTiet = await PhieuBaoGiaModel.getById(mabaogia);
+      if (!chiTiet) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy báo giá' });
+      }
+      // Đưa dữ liệu báo giá vào phieu_bao_gia để tương thích với BaoGia component
+      const phieu = {
+        mabaokham: chiTiet.phieu_bao_kham?.mabaokham,
+        phieu_bao_gia: chiTiet,
+        lenh_sua_chua: chiTiet.phieu_bao_kham?.lenh_sua_chua,
+      };
+      return res.json({ success: true, chiTiet: phieu });
+    } catch (err) {
+      return res.status(500).json({ success: false, message: err.message });
+    }
+  },
+
   // PATCH /api/chu-xuong/bao-gia/:mabaogia — Sửa chi phí báo giá
   suaBaoGia: async (req, res) => {
     try {

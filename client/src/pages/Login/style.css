@@ -1,0 +1,369 @@
+/* =============================================
+   LAYOUT NỀN
+   ============================================= */
+.ln-container {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 60%, #0f2942 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2rem 1rem 3rem;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* =============================================
+   BRANDING TOP
+   ============================================= */
+.ln-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  color: white;
+}
+.ln-brand-icon {
+  font-size: 2rem;
+  background: rgba(255,255,255,0.1);
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.ln-brand-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+.ln-brand-sub {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 0.1rem;
+}
+
+/* =============================================
+   CARD CHÍNH
+   ============================================= */
+.ln-card {
+  width: 100%;
+  max-width: 700px;
+  background: #ffffff;
+  border-radius: 1.25rem;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+  position: relative;
+}
+
+/* =============================================
+   HEADER BƯỚC
+   ============================================= */
+.ln-step-header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+.ln-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.4rem 0;
+}
+.ln-subtitle {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* =============================================
+   LƯỚI VAI TRÒ (BƯỚC 1)
+   ============================================= */
+.ln-role-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.ln-role-card {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.875rem;
+  padding: 1.25rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.ln-role-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+.ln-role-blue:hover  { border-color: #2563eb; }
+.ln-role-green:hover { border-color: #16a34a; }
+.ln-role-purple:hover{ border-color: #7c3aed; }
+.ln-role-orange:hover{ border-color: #ea580c; }
+
+.ln-role-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.ln-role-icon-box {
+  font-size: 1.4rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.ln-role-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ln-role-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.ln-role-desc {
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.ln-role-steps {
+  list-style: none;
+  margin: 0.25rem 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.ln-role-steps li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: #475569;
+}
+.ln-step-dot {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.ln-role-cta {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
+
+/* Màu nền icon & badge */
+.ln-bg-blue   { background-color: #2563eb; }
+.ln-bg-green  { background-color: #16a34a; }
+.ln-bg-purple { background-color: #7c3aed; }
+.ln-bg-orange { background-color: #ea580c; }
+
+.ln-badge-blue   { background-color: #eff6ff; color: #2563eb; }
+.ln-badge-green  { background-color: #f0fdf4; color: #16a34a; }
+.ln-badge-purple { background-color: #f5f3ff; color: #7c3aed; }
+.ln-badge-orange { background-color: #fff7ed; color: #ea580c; }
+
+.ln-dot-blue   { background-color: #2563eb; }
+.ln-dot-green  { background-color: #16a34a; }
+.ln-dot-purple { background-color: #7c3aed; }
+.ln-dot-orange { background-color: #ea580c; }
+
+.ln-cta-blue   { color: #2563eb; }
+.ln-cta-green  { color: #16a34a; }
+.ln-cta-purple { color: #7c3aed; }
+.ln-cta-orange { color: #ea580c; }
+
+/* Gợi ý luồng */
+.ln-workflow-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.78rem;
+  color: #64748b;
+}
+.ln-hint-icon { font-size: 0.9rem; }
+
+/* Gợi ý đăng ký */
+.ln-register-hint {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+.ln-register-link {
+  background: none;
+  border: none;
+  color: #ea580c;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0;
+}
+.ln-register-link:hover { text-decoration: underline; }
+
+/* =============================================
+   BƯỚC 2: FORM ĐĂNG NHẬP
+   ============================================= */
+.ln-back-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 500;
+}
+.ln-back-btn:hover { color: #0f172a; }
+
+.ln-selected-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+}
+
+.ln-form {
+  text-align: left;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.ln-form-group {
+  margin-bottom: 1.1rem;
+}
+.ln-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 0.35rem;
+}
+.ln-required { color: #ef4444; }
+
+.ln-input {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  color: #0f172a;
+}
+.ln-input-focus-blue:focus   { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+.ln-input-focus-green:focus  { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.12); }
+.ln-input-focus-purple:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.12); }
+.ln-input-focus-orange:focus { border-color: #ea580c; box-shadow: 0 0 0 3px rgba(234,88,12,0.12); }
+
+.ln-password-wrap {
+  position: relative;
+}
+.ln-password-wrap .ln-input {
+  padding-right: 2.75rem;
+}
+.ln-eye-btn {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  line-height: 1;
+}
+
+.ln-form-utilities {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+.ln-remember {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #475569;
+  cursor: pointer;
+}
+.ln-remember input { accent-color: #2563eb; }
+
+.ln-forgot { text-decoration: none; font-weight: 500; }
+.ln-link-blue   { color: #2563eb; }
+.ln-link-green  { color: #16a34a; }
+.ln-link-purple { color: #7c3aed; }
+.ln-link-orange { color: #ea580c; }
+.ln-forgot:hover { text-decoration: underline; }
+
+.ln-submit-btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+.ln-submit-btn:hover { filter: brightness(1.08); }
+.ln-btn-blue   { background-color: #2563eb; }
+.ln-btn-green  { background-color: #16a34a; }
+.ln-btn-purple { background-color: #7c3aed; }
+.ln-btn-orange { background-color: #ea580c; }
+
+/* =============================================
+   FOOTER
+   ============================================= */
+.ln-footer {
+  margin-top: 1.5rem;
+  font-size: 0.78rem;
+  color: #475569;
+  text-align: center;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 560px) {
+  .ln-card { padding: 1.5rem 1.25rem; }
+  .ln-role-grid { grid-template-columns: 1fr; }
+  .ln-title { font-size: 1.25rem; }
+}

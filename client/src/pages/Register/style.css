@@ -1,0 +1,360 @@
+/* =============================================
+   LAYOUT NỀN
+   ============================================= */
+.rg-container {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 60%, #0f2942 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2rem 1rem 3rem;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* =============================================
+   BRANDING
+   ============================================= */
+.rg-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+  color: white;
+}
+.rg-brand-icon {
+  font-size: 2rem;
+  background: rgba(255,255,255,0.1);
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.rg-brand-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+.rg-brand-sub {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 0.1rem;
+}
+
+/* =============================================
+   CARD CHÍNH
+   ============================================= */
+.rg-card {
+  width: 100%;
+  max-width: 560px;
+  background: #ffffff;
+  border-radius: 1.25rem;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+}
+
+/* =============================================
+   HEADER
+   ============================================= */
+.rg-header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+.rg-avatar-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: linear-gradient(135deg, #ea580c, #f97316);
+  border-radius: 50%;
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 4px 12px rgba(234,88,12,0.35);
+}
+.rg-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.35rem 0;
+}
+.rg-subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* =============================================
+   LỖI
+   ============================================= */
+.rg-error-box {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #dc2626;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+/* =============================================
+   FORM
+   ============================================= */
+.rg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.rg-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.rg-form-group {
+  margin-bottom: 1.1rem;
+}
+.rg-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.4rem;
+}
+.rg-req { color: #ef4444; }
+
+.rg-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.rg-input-icon {
+  position: absolute;
+  left: 0.75rem;
+  font-size: 1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+.rg-input {
+  width: 100%;
+  padding: 0.65rem 1rem 0.65rem 2.4rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+  color: #0f172a;
+  background: #f8fafc;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.rg-input:focus {
+  border-color: #ea580c;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(234,88,12,0.12);
+}
+.rg-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.rg-input-pass {
+  padding-right: 2.75rem;
+}
+.rg-eye-btn {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  line-height: 1;
+  z-index: 1;
+}
+
+/* =============================================
+   CHỌN VAI TRÒ
+   ============================================= */
+.rg-role-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+}
+.rg-role-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding: 0.75rem 0.875rem;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+.rg-role-card:hover {
+  background: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+}
+.rg-role-card:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.rg-role-orange:hover { border-color: #ea580c; }
+.rg-role-blue:hover   { border-color: #2563eb; }
+.rg-role-green:hover  { border-color: #16a34a; }
+.rg-role-purple:hover { border-color: #7c3aed; }
+
+.rg-role-selected { background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
+.rg-selected-orange { border-color: #ea580c; }
+.rg-selected-blue   { border-color: #2563eb; }
+.rg-selected-green  { border-color: #16a34a; }
+.rg-selected-purple { border-color: #7c3aed; }
+
+.rg-role-icon {
+  font-size: 1.1rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.15rem;
+}
+.rg-icon-bg-orange { background: #fff7ed; }
+.rg-icon-bg-blue   { background: #eff6ff; }
+.rg-icon-bg-green  { background: #f0fdf4; }
+.rg-icon-bg-purple { background: #f5f3ff; }
+
+.rg-role-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.rg-role-desc {
+  font-size: 0.72rem;
+  color: #64748b;
+  line-height: 1.35;
+}
+.rg-role-check {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: #22c55e;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =============================================
+   NÚT ĐĂNG KÝ
+   ============================================= */
+.rg-submit-btn {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: linear-gradient(135deg, #ea580c, #f97316);
+  color: white;
+  border: none;
+  border-radius: 0.6rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: filter 0.15s, transform 0.1s;
+  box-shadow: 0 4px 14px rgba(234,88,12,0.35);
+}
+.rg-submit-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+.rg-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.rg-btn-orange { background: linear-gradient(135deg, #ea580c, #f97316); box-shadow: 0 4px 14px rgba(234,88,12,0.35); }
+.rg-btn-blue   { background: linear-gradient(135deg, #1d4ed8, #2563eb); box-shadow: 0 4px 14px rgba(37,99,235,0.35); }
+.rg-btn-green  { background: linear-gradient(135deg, #15803d, #16a34a); box-shadow: 0 4px 14px rgba(22,163,74,0.35); }
+.rg-btn-purple { background: linear-gradient(135deg, #6d28d9, #7c3aed); box-shadow: 0 4px 14px rgba(124,58,237,0.35); }
+
+/* =============================================
+   DIVIDER & LINK ĐẾN LOGIN
+   ============================================= */
+.rg-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0 1rem;
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+.rg-divider::before,
+.rg-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+.rg-login-link {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  background: transparent;
+  color: #ea580c;
+  border: 1.5px solid #ea580c;
+  border-radius: 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.rg-login-link:hover {
+  background: #fff7ed;
+}
+
+/* =============================================
+   THÀNH CÔNG
+   ============================================= */
+.rg-success-icon {
+  font-size: 3.5rem;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+.rg-success-title {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.5rem;
+}
+.rg-success-desc {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+.rg-footer {
+  margin-top: 1.5rem;
+  font-size: 0.78rem;
+  color: #475569;
+  text-align: center;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 520px) {
+  .rg-card { padding: 1.5rem 1.25rem; }
+  .rg-form-row { grid-template-columns: 1fr; gap: 0; }
+  .rg-role-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .rg-title { font-size: 1.25rem; }
+  .rg-role-desc { display: none; }
+}

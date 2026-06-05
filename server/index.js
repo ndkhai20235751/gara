@@ -35,6 +35,12 @@ app.use('/api/tho', thoKyThuatRoutes);
 const keToanRoutes = require('./routes/keToanRoutes');
 app.use('/api/ke-toan', keToanRoutes);
 
+const khachHangRoutes = require('./routes/khachHangRoutes');
+app.use('/api/khach-hang', khachHangRoutes);
+
+const thongBaoRoutes = require('./routes/thongBaoRoutes');
+app.use('/api/thong-bao', thongBaoRoutes);
+
 
 // 4. CÁC ĐƯỜNG DẪN API (ROUTES)
 app.get('/api/data', (req, res) => {

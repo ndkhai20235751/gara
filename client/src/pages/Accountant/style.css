@@ -1,0 +1,581 @@
+.accountant-dashboard {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding: 1.5rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #1e293b;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+/* TOP HEADER BAR */
+.acc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.acc-icon-box {
+  font-size: 1.5rem;
+  background-color: #a855f7; /* Màu tím logo icon */
+  color: white;
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.5rem;
+}
+
+.acc-header h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0;
+  color: #0f172a;
+}
+
+.acc-sub {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0;
+  margin-top: 0.15rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.bell-icon {
+  font-size: 1.25rem;
+  position: relative;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.bell-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* Cập nhật nút đăng xuất phẳng chuẩn UI Figma */
+.btn-logout {
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.btn-logout:hover {
+  color: #0f172a;
+}
+
+/* KHU VỰC TIÊU ĐỀ PHỤ */
+.screen-title-area h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 1rem 0 1.5rem 0;
+}
+
+/* THỂ INVOICE CARD */
+.invoice-card {
+  background-color: white;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.01);
+}
+
+.invoice-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.invoice-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.invoice-id {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 1.1rem;
+}
+
+.invoice-status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+.invoice-status-badge.status-pending {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.invoice-status-badge.status-sent {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+/* NÚT TẠO BÁO GIÁ MỚI (MÀU TÍM NỔI BẬT) */
+.btn-create {
+  background-color: #a855f7;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(168, 85, 247, 0.2);
+  transition: background 0.15s;
+}
+.btn-create:hover {
+  background-color: #9333ea;
+}
+
+/* CÁC NÚT THAO TÁC KHÁC */
+.invoice-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-edit {
+  background-color: white;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+.btn-edit:hover { background-color: #f8fafc; }
+
+.btn-pdf {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+.btn-pdf:hover { background-color: #2563eb; }
+
+/* THÔNG TIN NỘI DUNG */
+.company-client-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 0.25rem 0;
+}
+
+.machine-title {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0 0 0.25rem 0;
+}
+
+.tech-meta {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0 0 1rem 0;
+}
+
+.box-title {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.35rem;
+}
+
+.diagnosis-box {
+  background-color: #f8fafc;
+  padding: 0.85rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.box-content {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* BADGES PHỤ TÙNG VẬT TƯ */
+.parts-badges-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.part-badge {
+  background-color: #eff6ff;
+  color: #2563eb;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid #dbeafe;
+}
+
+/* THÔNG BÁO DROPDOWN */
+.bell-wrapper {
+  position: relative;
+}
+
+.thongbao-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 320px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  margin-top: 0.5rem;
+}
+
+.thongbao-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.thongbao-count {
+  font-size: 0.75rem;
+  background: #ef4444;
+  color: white;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.thongbao-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.thongbao-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.thongbao-item:hover {
+  background: #f8fafc;
+}
+
+.thongbao-item.chua-doc {
+  background: #fef3c7;
+}
+
+.thongbao-item.chua-doc:hover {
+  background: #fde68a;
+}
+
+.thongbao-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.thongbao-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.thongbao-title {
+  font-size: 0.875rem;
+  color: #1e293b;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* ============================================
+   TABS
+   ============================================ */
+.acc-tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 1.5rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 1rem;
+}
+
+.acc-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  background: #f1f5f9;
+  border-radius: 0.5rem 0.5rem 0 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #64748b;
+  transition: all 0.2s;
+}
+
+.acc-tab:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.acc-tab.active {
+  background: white;
+  color: #7c3aed;
+  border: 1px solid #e2e8f0;
+  border-bottom: 1px solid white;
+  margin-bottom: -1px;
+}
+
+.tab-badge {
+  background: #ef4444;
+  color: white;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  animation: pulse 2s infinite;
+}
+
+.tab-count {
+  background: #94a3b8;
+  color: white;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #64748b;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #475569;
+  margin: 0 0 0.5rem 0;
+}
+
+.empty-state p {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* ============================================
+   YÊU CẦU KHÁCH HÀNG
+   ============================================ */
+.yeucau-container {
+  padding: 0 1.5rem;
+}
+
+.yeucau-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.yeucau-card {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.yeucau-card.chua-doc {
+  border-left: 4px solid #ef4444;
+  background: linear-gradient(90deg, #fef2f2 0%, white 20%);
+}
+
+.yeucau-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.yeucau-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.yeucau-id {
+  background: #7c3aed;
+  color: white;
+  padding: 0.35rem 0.875rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.yeucau-new {
+  background: #ef4444;
+  color: white;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  animation: pulse 2s infinite;
+}
+
+.yeucau-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.yeucau-date, .yeucau-time {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.yeucau-card-body {
+  padding: 1.25rem;
+}
+
+.yeucau-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.yeucau-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.yeucau-value {
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.yeucau-lydo-box {
+  background: #fef9c3;
+  border-left: 4px solid #eab308;
+  padding: 0.875rem 1rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-size: 0.9rem;
+  color: #713f12;
+  line-height: 1.6;
+  margin-top: 0.5rem;
+}
+
+.yeucau-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+.btn-danh-dau {
+  padding: 0.5rem 1rem;
+  border: 1px solid #cbd5e1;
+  background: white;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danh-dau:hover {
+  background: #f1f5f9;
+  border-color: #7c3aed;
+  color: #7c3aed;
+}
+
+.btn-chinh-sua {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #7c3aed;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-chinh-sua:hover {
+  background: #6d28d9;
+}
+
+/* ============================================
+   PHIẾU GIÁM ĐỊNH CONTAINER
+   ============================================ */
+.phieugiamdinh-container {
+  padding: 0 1.5rem;
+}
+
+/* ============================================
+   ANIMATION
+   ============================================ */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}

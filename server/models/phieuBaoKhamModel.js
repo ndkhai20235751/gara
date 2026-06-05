@@ -17,12 +17,20 @@ const PhieuBaoKhamModel = {
       .from('phieu_bao_kham')
       .select(`
         *,
-        phieu_bao_gia(mabaogia, noidung, chiphinhancong, chiphiphutung, chiphikhac, tongcong, trangthai, thoigiandapung),
+        phieu_bao_gia(mabaogia, tendonvi, diachidonvi, sodienthoaidonvi, noidung, chiphinhancong, chiphiphutung, chiphikhac, tongcong, trangthai, thoigiandapung),
         lenh_sua_chua(malenh, tho_ky_thuat(hoten, sodienthoai), phieu_yeu_cau(*, khach_hang(tencongty, sodienthoai)))
       `)
       .order('thoigianlap', { ascending: false });
     if (error) throw error;
-    return data;
+
+    // Transform data: nếu phieu_bao_gia là array thì lấy phần tử đầu tiên
+    return data.map(p => {
+      let bg = p.phieu_bao_gia;
+      if (Array.isArray(bg) && bg.length > 0) {
+        bg = bg[0];
+      }
+      return { ...p, phieu_bao_gia: bg || null };
+    });
   },
 };
 
