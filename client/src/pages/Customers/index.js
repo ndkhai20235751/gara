@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './style.css';
 import BaoGia from '../Accountant/Popus/BaoGia';
-import { guiYeuCau, layDanhSachYeuCau, layBaoGiaKhachHang, layChiTietBaoGiaKhachHang, pheDuyetBaoGia, yeuCauDieuChinhBaoGia } from '../../services/api';
+import { guiYeuCau, layDanhSachYeuCau, layBaoGiaKhachHang, layChiTietBaoGiaKhachHang, pheDuyetBaoGia, yeuCauDieuChinhBaoGia, xacNhanNghiemThu } from '../../services/api';
 
 const STATUS_STEPS = ['Chờ tiếp nhận', 'Đã tiếp nhận', 'Đã phân công', 'Đang kiểm tra', 'Hoàn thành'];
 const STATUS_INDEX = { 'Chờ tiếp nhận': 0, 'Đã tiếp nhận': 1, 'Đã phân công': 2, 'Đang kiểm tra': 3, 'Hoàn thành': 4 };
 
-const emptyForm = { modelmay: '', vitricongtruong: '', toado: '', motaloi: '' };
+const emptyForm = { modelmay: '', vitricongtruong: '', nguoilienhe: '', sodienthoai: '', motaloi: '' };
 
 export default function CustomerDashboard({ onDangXuat }) {
   const [activeTab, setActiveTab] = useState('requests');
@@ -24,6 +24,9 @@ export default function CustomerDashboard({ onDangXuat }) {
   const [showAdjust, setShowAdjust] = useState(false);
   const [adjustNote, setAdjustNote] = useState('');
   const [dangXuLy, setDangXuLy] = useState(false);
+
+  const [showConfirmNghiemThu, setShowConfirmNghiemThu] = useState(false);
+  const [nghiemThuTarget, setNghiemThuTarget] = useState(null);
 
   // Load báo giá khi vào tab báo giá
   useEffect(() => {
@@ -98,15 +101,17 @@ export default function CustomerDashboard({ onDangXuat }) {
     setDangTai(true);
     try {
       await guiYeuCau({
-        modelmay:       newForm.modelmay,
+        modelmay:        newForm.modelmay,
         vitricongtruong: newForm.vitricongtruong,
-        toado:          newForm.toado,
-        motaloi:        newForm.motaloi,
+        nguoilienhe:     newForm.nguoilienhe,
+        sodienthoai:     newForm.sodienthoai,
+        motaloi:         newForm.motaloi,
       });
       const ketQua = await layDanhSachYeuCau();
       setOrders(ketQua.danhSach || []);
       setNewForm(emptyForm);
       setShowNewRequest(false);
+      setActiveTab('requests');
     } catch (error) {
       alert('Lỗi gửi yêu cầu: ' + error.message);
     } finally {
@@ -114,8 +119,24 @@ export default function CustomerDashboard({ onDangXuat }) {
     }
   };
 
-  const totalDone = orders.filter((o) => o.trangthai === 'Hoàn thành').length;
-  const totalActive = orders.filter((o) => o.trangthai !== 'Hoàn thành').length;
+  const handleXacNhanNghiemThu = async () => {
+    if (!nghiemThuTarget) return;
+    setDangXuLy(true);
+    try {
+      await xacNhanNghiemThu(nghiemThuTarget.mayeucau);
+      setShowConfirmNghiemThu(false);
+      setNghiemThuTarget(null);
+      const ketQua = await layDanhSachYeuCau();
+      setOrders(ketQua.danhSach || []);
+    } catch (err) {
+      alert('Lỗi xác nhận nghiệm thu: ' + err.message);
+    } finally {
+      setDangXuLy(false);
+    }
+  };
+
+  const totalDone = orders.filter((o) => ['Hoàn thành', 'Khách đã nghiệm thu'].includes(o.trangthai)).length;
+  const totalActive = orders.filter((o) => !['Hoàn thành', 'Khách đã nghiệm thu', 'Từ chối'].includes(o.trangthai)).length;
   
    useEffect(() => {
   const taiDuLieu = async () => {
@@ -192,6 +213,13 @@ export default function CustomerDashboard({ onDangXuat }) {
           💰 Báo giá & Phê duyệt
           {baoGiaList.some(bg => bg.trangthai === 'Đã gửi khách') && <span className="cust-tab-dot" />}
         </button>
+        <button
+          className={`cust-tab-btn ${activeTab === 'nghiemthu' ? 'cust-tab-active' : ''}`}
+          onClick={() => setActiveTab('nghiemthu')}
+        >
+          🔖 Nghiệm thu
+          {totalDone > 0 && <span className="cust-tab-badge">{totalDone}</span>}
+        </button>
       </div>
 
       {/* Tab: Yêu cầu của tôi */}
@@ -226,7 +254,7 @@ export default function CustomerDashboard({ onDangXuat }) {
 
                 <div className="cust-order-meta">
                   <span>📍 {order.vitricongtruong}</span>
-                  {order.toado && <span>🗺️ {order.toado}</span>}
+                  {order.nguoilienhe && <span>🗺️ {order.nguoilienhe}</span>}
                 </div>
 
                 <div className="cust-order-desc">{order.motaloi}</div>
@@ -349,6 +377,67 @@ export default function CustomerDashboard({ onDangXuat }) {
         </div>
       )}
 
+      {/* Tab: Nghiệm thu */}
+      {activeTab === 'nghiemthu' && (
+        <div className="cust-section">
+          <h2 className="cust-section-title">Danh sách nghiệm thu</h2>
+
+          {orders.filter(o => ['Hoàn thành', 'Khách đã nghiệm thu'].includes(o.trangthai)).length === 0 ? (
+            <div className="cust-empty-state">
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔖</div>
+              <p>Chưa có yêu cầu nào hoàn thành nghiệm thu.</p>
+              <p style={{ fontSize: '0.85rem', color: '#64748b' }}>Các lệnh sửa chữa hoàn thành sẽ xuất hiện tại đây.</p>
+            </div>
+          ) : (
+            orders.filter(o => ['Hoàn thành', 'Khách đã nghiệm thu'].includes(o.trangthai)).map((order) => {
+              const ngayGui = order.thoigiangui ? new Date(order.thoigiangui).toLocaleDateString('vi-VN') : '—';
+              const daXacNhan = order.trangthai === 'Khách đã nghiệm thu';
+              return (
+                <div key={order.mayeucau} className={`cust-nt-card ${daXacNhan ? 'cust-nt-confirmed' : ''}`}>
+                  <div className="cust-nt-badge-wrap">
+                    {daXacNhan
+                      ? <span className="cust-nt-confirmed-badge">✅ Đã xác nhận nghiệm thu</span>
+                      : <span className="cust-nt-done-badge">🔧 Sửa chữa hoàn thành — Chờ nghiệm thu</span>
+                    }
+                  </div>
+
+                  <div className="cust-nt-header">
+                    <div>
+                      <span className="cust-nt-id">#{order.mayeucau}</span>
+                      <h3 className="cust-nt-machine">{order.modelmay}</h3>
+                    </div>
+                    <div className="cust-nt-date">
+                      <span>📅 Ngày gửi: {ngayGui}</span>
+                    </div>
+                  </div>
+
+                  <div className="cust-nt-meta">
+                    <span>📍 {order.vitricongtruong}</span>
+                    {order.nguoilienhe && <span>🗺️ {order.nguoilienhe}</span>}
+                  </div>
+
+                  <div className="cust-nt-desc">{order.motaloi}</div>
+
+                  <div className="cust-nt-footer">
+                    <div className="cust-nt-info-row">
+                      <span className="cust-nt-info-icon">🏭</span>
+                      <span>Máy Công Trình Khánh Nguyên đã hoàn tất sửa chữa và bàn giao.</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      {!daXacNhan && (
+                        <button className="cust-btn-xacnhan-nt" onClick={() => { setNghiemThuTarget(order); setShowConfirmNghiemThu(true); }}>
+                          ✔️ Xác nhận nghiệm thu
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      )}
+
       {/* Modal: Gửi yêu cầu mới */}
       {showNewRequest && (
         <div className="cust-modal-overlay" onClick={() => setShowNewRequest(false)}>
@@ -377,14 +466,24 @@ export default function CustomerDashboard({ onDangXuat }) {
                   />
                 </div>
                 <div className="cust-form-group">
-                  <label>Tọa độ</label>
+                  <label>Người liên hệ</label>
                   <input
                     type="text"
-                    placeholder="VD: 10.823, 106.629"
-                    value={newForm.toado}
-                    onChange={(e) => setNewForm({ ...newForm, toado: e.target.value })}
+                    placeholder="VD: Nguyễn Văn A"
+                    value={newForm.nguoilienhe}
+                    onChange={(e) => setNewForm({ ...newForm, nguoilienhe: e.target.value })}
                   />
                 </div>
+              </div>
+              <div className="cust-form-group">
+                <label>Số điện thoại liên hệ <span className="cust-req">*</span></label>
+                <input
+                  type="tel"
+                  placeholder="VD: 0912 345 678"
+                  value={newForm.sodienthoai}
+                  onChange={(e) => setNewForm({ ...newForm, sodienthoai: e.target.value })}
+                  required
+                />
               </div>
               <div className="cust-form-group">
                 <label>Mô tả lỗi <span className="cust-req">*</span></label>
@@ -427,6 +526,26 @@ export default function CustomerDashboard({ onDangXuat }) {
               <button className="btn-cust-cancel" onClick={() => setShowApprove(false)}>Hủy</button>
               <button className="btn-cust-confirm-green" onClick={handlePheDuyet} disabled={dangXuLy}>
                 {dangXuLy ? '⏳ Đang xử lý...' : '✔️ Xác nhận phê duyệt'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Xác nhận nghiệm thu */}
+      {showConfirmNghiemThu && nghiemThuTarget && (
+        <div className="cust-modal-overlay" onClick={() => setShowConfirmNghiemThu(false)}>
+          <div className="cust-modal-box" onClick={(e) => e.stopPropagation()}>
+            <div className="cust-modal-icon">🔖</div>
+            <h3 className="cust-modal-title">Xác nhận nghiệm thu</h3>
+            <p className="cust-modal-desc">
+              Bạn xác nhận đã nhận bàn giao và kiểm tra máy <strong>{nghiemThuTarget.modelmay}</strong> sau khi sửa chữa xong.<br />
+              Hành động này không thể hoàn tác.
+            </p>
+            <div className="cust-modal-footer">
+              <button className="btn-cust-cancel" onClick={() => setShowConfirmNghiemThu(false)}>Hủy</button>
+              <button className="btn-cust-confirm-green" onClick={handleXacNhanNghiemThu} disabled={dangXuLy}>
+                {dangXuLy ? '⏳ Đang xử lý...' : '✔️ Xác nhận nghiệm thu'}
               </button>
             </div>
           </div>

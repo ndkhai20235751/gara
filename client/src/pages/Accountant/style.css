@@ -141,6 +141,58 @@
   color: #4338ca;
 }
 
+.btn-acc-detail {
+  padding: 0.4rem 0.9rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  border-radius: 0.375rem;
+  font-size: 0.83rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-acc-detail:hover { background: #dbeafe; }
+
+.acc-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.acc-modal-box {
+  background: white;
+  border-radius: 0.875rem;
+  padding: 1.5rem;
+  width: 100%; max-width: 520px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+.acc-modal-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 1.25rem;
+}
+.acc-modal-head h3 { font-size: 1rem; font-weight: 700; color: #1e293b; margin: 0; }
+.acc-modal-close {
+  background: none; border: none; font-size: 1.4rem;
+  color: #94a3b8; cursor: pointer; line-height: 1;
+}
+.acc-modal-close:hover { color: #475569; }
+.acc-detail-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0.75rem; margin-bottom: 1.25rem;
+}
+.acc-detail-full { grid-column: 1 / -1; }
+.acc-detail-lbl { font-size: 0.75rem; color: #64748b; font-weight: 500; margin-bottom: 0.2rem; }
+.acc-detail-val { font-size: 0.9rem; color: #1e293b; font-weight: 500; }
+.acc-modal-footer { display: flex; justify-content: flex-end; }
+.btn-acc-close {
+  padding: 0.45rem 1.2rem;
+  background: #f1f5f9; border: 1px solid #e2e8f0;
+  color: #475569; border-radius: 0.375rem;
+  font-size: 0.875rem; cursor: pointer;
+}
+.btn-acc-close:hover { background: #e2e8f0; }
+
 /* NÚT TẠO BÁO GIÁ MỚI (MÀU TÍM NỔI BẬT) */
 .btn-create {
   background-color: #a855f7;

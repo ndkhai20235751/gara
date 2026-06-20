@@ -345,6 +345,20 @@
 }
 
 /* Buttons hành động */
+.ow-btn-detail {
+  padding: 0.25rem 0.7rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  border-radius: 0.375rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.ow-btn-detail:hover { background: #dbeafe; }
+
 .ow-btn-approve {
   padding: 0.5rem 1.1rem;
   background: #16a34a;
@@ -383,6 +397,49 @@
   transition: background 0.15s;
 }
 .ow-btn-update:hover { background: #1d4ed8; }
+
+/* WORK PROGRESS STEPPER (Tab Phân công thợ) */
+.ow-work-stepper {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.75rem 0 0.25rem;
+  overflow-x: auto;
+}
+.ow-ws-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 80px;
+}
+.ow-ws-circle {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.82rem; font-weight: 700;
+  border: 2px solid #e2e8f0;
+  background: white; color: #94a3b8;
+}
+.ow-ws-label {
+  font-size: 0.7rem; text-align: center;
+  margin-top: 0.4rem; max-width: 80px; line-height: 1.35;
+  color: #94a3b8;
+}
+.ow-ws-done .ow-ws-circle  { background: #16a34a; border-color: #16a34a; color: white; }
+.ow-ws-done .ow-ws-label   { color: #16a34a; font-weight: 600; }
+.ow-ws-active .ow-ws-circle {
+  background: #2563eb; border-color: #2563eb; color: white;
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.15);
+}
+.ow-ws-active .ow-ws-label { color: #2563eb; font-weight: 700; }
+.ow-ws-pending .ow-ws-circle { background: #f8fafc; border-color: #e2e8f0; color: #cbd5e1; }
+.ow-ws-pending .ow-ws-label  { color: #cbd5e1; }
+.ow-ws-line {
+  flex: 1; height: 2px;
+  background: #e2e8f0;
+  margin-top: 16px; min-width: 16px;
+}
+.ow-ws-line-done { background: #16a34a; }
 
 .ow-done-badge {
   display: inline-flex;

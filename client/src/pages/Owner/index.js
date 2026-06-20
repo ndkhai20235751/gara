@@ -12,6 +12,15 @@ const isAssigned = (t) => t === 'Đã phân công';
 const isDone     = (t) => t === 'Hoàn thành';
 const isActive   = (t) => !isPending(t) && !isDone(t) && t !== 'Từ chối';
 
+const WORK_STEPS = ['Đã nhận lệnh', 'Lập phiếu', 'Đang sửa chữa', 'Hoàn thành'];
+const getWorkStep = (trangthai) => {
+  if (['Đã phân công', 'Đang kiểm tra'].includes(trangthai)) return 0;
+  if (['Chờ báo giá', 'Chờ khách duyệt', 'Đã duyệt báo giá'].includes(trangthai)) return 1;
+  if (trangthai === 'Đang sửa chữa') return 2;
+  if (['Hoàn thành', 'Khách đã nghiệm thu'].includes(trangthai)) return 3;
+  return 0;
+};
+
 const fmtVnd = (n) => Number(n || 0).toLocaleString('vi-VN') + ' đ';
 
 export default function OwnerDashboard({ nguoiDung, onDangXuat }) {
@@ -34,6 +43,7 @@ export default function OwnerDashboard({ nguoiDung, onDangXuat }) {
   const [showBaoGia, setShowBaoGia]     = useState(false);
   const [selectedBaoGia, setSelectedBaoGia] = useState(null);
   const [confirmDuyet, setConfirmDuyet] = useState(null);
+  const [detailTarget, setDetailTarget] = useState(null);
 
   const taiDuLieu = useCallback(async () => {
     setDangTai(true);
@@ -57,7 +67,7 @@ export default function OwnerDashboard({ nguoiDung, onDangXuat }) {
   useEffect(() => { taiDuLieu(); }, [taiDuLieu]);
 
   const pending  = requests.filter((r) => isPending(r.trangthai));
-  const assigned = requests.filter((r) => isAssigned(r.trangthai));
+  const assigned = requests.filter((r) => !isPending(r.trangthai) && r.trangthai !== 'Từ chối');
   const working  = requests.filter((r) => isActive(r.trangthai) && !isAssigned(r.trangthai));
   const done     = requests.filter((r) => isDone(r.trangthai));
 
@@ -131,11 +141,12 @@ export default function OwnerDashboard({ nguoiDung, onDangXuat }) {
   };
 
   /* ── Lưu chỉnh sửa chi phí từ popup BaoGia ── */
-  const handleLuuBaoGia = async ({ chiphinhancong, chiphiphutung, chiphikhac, tongcong, noidung }) => {
-    if (!selectedBaoGia) return;
+  const handleLuuBaoGia = async ({ chiphinhancong, chiphiphutung, chiphikhac, tongcong, noidung, tendonvi, diachidonvi, sodienthoaidonvi }) => {
+    const mabaogia = selectedBaoGia?.phieu_bao_gia?.mabaogia;
+    if (!mabaogia) return;
     setDangGui(true);
     try {
-      await suaBaoGia(selectedBaoGia.mabaogia, { chiphinhancong, chiphiphutung, chiphikhac, tongcong, noidung });
+      await suaBaoGia(mabaogia, { chiphinhancong, chiphiphutung, chiphikhac, tongcong, noidung, tendonvi, diachidonvi, sodienthoaidonvi });
       setShowBaoGia(false);
       setSelectedBaoGia(null);
       await taiDuLieu();
@@ -238,7 +249,7 @@ export default function OwnerDashboard({ nguoiDung, onDangXuat }) {
           </div>
           {filtered(pending).length === 0 && <div className="ow-empty">Không có yêu cầu nào đang chờ xét duyệt.</div>}
           {filtered(pending).map((req) => (
-            <RequestCard key={req.mayeucau} req={req}>
+            <RequestCard key={req.mayeucau} req={req} onDetail={() => setDetailTarget(req)}>
               <div className="ow-card-actions">
                 <button className="ow-btn-approve" onClick={() => { setAssignTarget(req); setSelectedTechId(''); }}>
                   ✅ Duyệt & Phân công
@@ -256,18 +267,29 @@ export default function OwnerDashboard({ nguoiDung, onDangXuat }) {
       {activeTab === 'assign' && !dangTai && (
         <div className="ow-section">
           <div className="ow-section-header">
-            <h2 className="ow-section-title">Yêu cầu đã duyệt — Đang theo dõi thợ ({filtered(assigned).length})</h2>
+            <h2 className="ow-section-title">Tiến độ làm việc của thợ ({filtered(assigned).length})</h2>
           </div>
-          {filtered(assigned).length === 0 && <div className="ow-empty">Không có lệnh nào đang ở trạng thái đã phân công.</div>}
-          {filtered(assigned).map((req) => (
-            <RequestCard key={req.mayeucau} req={req}>
-              <div className="ow-card-actions">
-                <button className="ow-btn-update" onClick={() => setUpdateTarget(req)}>
-                  🔄 Cập nhật tiến độ
-                </button>
-              </div>
-            </RequestCard>
-          ))}
+          {filtered(assigned).length === 0 && <div className="ow-empty">Không có lệnh nào đang theo dõi.</div>}
+          {filtered(assigned).map((req) => {
+            const step = getWorkStep(req.trangthai);
+            return (
+              <RequestCard key={req.mayeucau} req={req} onDetail={() => setDetailTarget(req)}>
+                <div className="ow-work-stepper">
+                  {WORK_STEPS.map((label, i) => (
+                    <React.Fragment key={label}>
+                      <div className={`ow-ws-node ${i < step ? 'ow-ws-done' : i === step ? 'ow-ws-active' : 'ow-ws-pending'}`}>
+                        <div className="ow-ws-circle">{i < step ? '✓' : i + 1}</div>
+                        <div className="ow-ws-label">{label}</div>
+                      </div>
+                      {i < WORK_STEPS.length - 1 && (
+                        <div className={`ow-ws-line ${i < step ? 'ow-ws-line-done' : ''}`} />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </RequestCard>
+            );
+          })}
         </div>
       )}
 
@@ -322,6 +344,9 @@ export default function OwnerDashboard({ nguoiDung, onDangXuat }) {
                 {daGuiRoi && (
                   <div className="ow-card-footer">
                     <span className="ow-done-badge">✅ Đã gửi cho khách hàng</span>
+                    <button className="ow-btn-update" onClick={() => handleMoBaoGia(bg)}>
+                      📄 Xem báo giá
+                    </button>
                   </div>
                 )}
               </div>
@@ -337,7 +362,7 @@ export default function OwnerDashboard({ nguoiDung, onDangXuat }) {
             <h2 className="ow-section-title">Tổng quan tiến độ</h2>
           </div>
           {filtered([...assigned, ...working, ...done]).map((req) => (
-            <RequestCard key={req.mayeucau} req={req}>
+            <RequestCard key={req.mayeucau} req={req} onDetail={() => setDetailTarget(req)}>
               <div className="ow-card-actions">
                 {!isDone(req.trangthai) && (
                   <button className="ow-btn-update" onClick={() => setUpdateTarget(req)}>
@@ -455,14 +480,71 @@ export default function OwnerDashboard({ nguoiDung, onDangXuat }) {
         </div>
       )}
 
-      {/* Popup báo giá đầy đủ - chỉ xem */}
+      {/* Modal: Chi tiết phiếu yêu cầu */}
+      {detailTarget && (
+        <div className="ow-overlay" onClick={() => setDetailTarget(null)}>
+          <div className="ow-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="ow-modal-head">
+              <h3>📋 Chi tiết phiếu yêu cầu — #{detailTarget.mayeucau}</h3>
+              <button className="ow-close" onClick={() => setDetailTarget(null)}>×</button>
+            </div>
+            <div className="ow-modal-body">
+              <div className="ow-info-row">
+                <div className="ow-info-block">
+                  <div className="ow-info-lbl">Khách hàng</div>
+                  <div className="ow-info-val">{detailTarget.khach_hang?.tencongty || '—'}</div>
+                </div>
+                <div className="ow-info-block">
+                  <div className="ow-info-lbl">Trạng thái</div>
+                  <div className="ow-info-val">{detailTarget.trangthai}</div>
+                </div>
+              </div>
+              <div className="ow-info-row">
+                <div className="ow-info-block">
+                  <div className="ow-info-lbl">Thiết bị / Model máy</div>
+                  <div className="ow-info-val">{detailTarget.modelmay}</div>
+                </div>
+                <div className="ow-info-block">
+                  <div className="ow-info-lbl">Thời gian gửi</div>
+                  <div className="ow-info-val">
+                    {detailTarget.thoigiangui ? new Date(detailTarget.thoigiangui).toLocaleString('vi-VN') : '—'}
+                  </div>
+                </div>
+              </div>
+              <div className="ow-info-block" style={{ marginBottom: '0.75rem' }}>
+                <div className="ow-info-lbl">Vị trí công trường</div>
+                <div className="ow-info-val">📍 {detailTarget.vitricongtruong}</div>
+              </div>
+              <div className="ow-info-row">
+                <div className="ow-info-block">
+                  <div className="ow-info-lbl">Người liên hệ</div>
+                  <div className="ow-info-val">{detailTarget.nguoilienhe || '—'}</div>
+                </div>
+                <div className="ow-info-block">
+                  <div className="ow-info-lbl">Số điện thoại</div>
+                  <div className="ow-info-val">📞 {detailTarget.sodienthoai || '—'}</div>
+                </div>
+              </div>
+              <div className="ow-info-block" style={{ marginBottom: '1rem' }}>
+                <div className="ow-info-lbl">Mô tả hư hỏng</div>
+                <div className="ow-info-val" style={{ whiteSpace: 'pre-wrap' }}>{detailTarget.motaloi}</div>
+              </div>
+              <div className="ow-modal-footer">
+                <button className="ow-btn-cancel" onClick={() => setDetailTarget(null)}>Đóng</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Popup báo giá đầy đủ - có thể sửa */}
       <BaoGia
         isOpen={showBaoGia}
         onClose={() => { setShowBaoGia(false); setSelectedBaoGia(null); }}
         phieu={selectedBaoGia}
-        onSave={null}
+        onSave={handleLuuBaoGia}
         dangGui={dangGui}
-        readOnly={true}
+        readOnly={false}
       />
 
       {/* Modal: Xác nhận phê duyệt & gửi khách */}
@@ -495,7 +577,7 @@ export default function OwnerDashboard({ nguoiDung, onDangXuat }) {
   );
 }
 
-function RequestCard({ req, children }) {
+function RequestCard({ req, children, onDetail }) {
   const STATUS_CLASS = {
     'Chờ tiếp nhận':    'st-wait',
     'Đã phân công':     'st-assigned',
@@ -517,8 +599,11 @@ function RequestCard({ req, children }) {
           <span className="ow-id-tag">#{req.mayeucau}</span>
           <span className="ow-customer-name">{req.khach_hang?.tencongty || '—'}</span>
         </div>
-        <div className="ow-badges">
+        <div className="ow-badges" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span className={`ow-badge-st ${STATUS_CLASS[req.trangthai] || ''}`}>{req.trangthai}</span>
+          {onDetail && (
+            <button className="ow-btn-detail" onClick={onDetail}>👁 Chi tiết</button>
+          )}
         </div>
       </div>
       <h3 className="ow-machine">{req.modelmay}</h3>

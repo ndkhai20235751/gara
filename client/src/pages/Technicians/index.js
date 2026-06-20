@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './style.css';
-import { layLenhCuaTho, nhanLenh, denHienTruong, nopPhieuGiamDinh } from '../../services/api';
+import { layLenhCuaTho, nhanLenh, denHienTruong, nopPhieuGiamDinh, batDauSuaChua, hoanThanhSuaChua } from '../../services/api';
 
 const emptyReport = { sogiodongho: '', chandoan: '', phutung: '', giocong: '', ghichu: '' };
 const PRIORITY_CLASS = { 'Khẩn cấp': 'tc-pri-urgent', 'Trung bình': 'tc-pri-medium', 'Thấp': 'tc-pri-low' };
+const PROGRESS_STEPS = ['Chờ nhận', 'Đã nhận lệnh', 'Đã đến hiện trường', 'Đã nộp phiếu', 'Đang sửa chữa'];
 
 export default function TechnicianDashboard({ nguoiDung, onDangXuat }) {
   const [tasks, setTasks]         = useState([]);
@@ -15,6 +16,7 @@ export default function TechnicianDashboard({ nguoiDung, onDangXuat }) {
 
   const [confirmTarget, setConfirmTarget] = useState(null);
   const [reportTarget, setReportTarget]   = useState(null);
+  const [detailTarget, setDetailTarget]   = useState(null);
   const [reportForm, setReportForm]       = useState(emptyReport);
 
   const taiDuLieu = useCallback(async () => {
@@ -38,6 +40,7 @@ export default function TechnicianDashboard({ nguoiDung, onDangXuat }) {
     malenh:       t.malenh,
     mayeucau:     t.phieu_yeu_cau?.mayeucau,
     status:       t.trangthai,
+    yeuCauStatus: t.phieu_yeu_cau?.trangthai || '',
     priority:     t.mucdouutien || 'Trung bình',
     customerName: t.phieu_yeu_cau?.khach_hang?.tencongty || '—',
     machineModel: t.phieu_yeu_cau?.modelmay || '—',
@@ -45,6 +48,9 @@ export default function TechnicianDashboard({ nguoiDung, onDangXuat }) {
     assignedAt:   t.thoigianphancong
       ? new Date(t.thoigianphancong).toLocaleString('vi-VN') : '',
     description:  t.phieu_yeu_cau?.motaloi || '',
+    nguoilienhe:  t.phieu_yeu_cau?.nguoilienhe || '',
+    sodienthoai:  t.phieu_yeu_cau?.sodienthoai || '',
+    thoigiangui:  t.phieu_yeu_cau?.thoigiangui || null,
   });
 
   const all       = tasks.map(normalize);
@@ -72,6 +78,26 @@ export default function TechnicianDashboard({ nguoiDung, onDangXuat }) {
   const handleArrived = async (malenh) => {
     try {
       await denHienTruong(malenh);
+      await taiDuLieu();
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+    }
+  };
+
+  /* ── Bắt đầu sửa chữa ── */
+  const handleBatDauSua = async (malenh) => {
+    try {
+      await batDauSuaChua(malenh);
+      await taiDuLieu();
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+    }
+  };
+
+  /* ── Hoàn thành sửa chữa ── */
+  const handleHoanThanh = async (malenh) => {
+    try {
+      await hoanThanhSuaChua(malenh);
       await taiDuLieu();
     } catch (err) {
       alert('Lỗi: ' + err.message);
@@ -146,6 +172,9 @@ export default function TechnicianDashboard({ nguoiDung, onDangXuat }) {
         <button className={`tc-tab-btn ${activeTab === 'report'   ? 'tc-tab-active' : ''}`} onClick={() => setActiveTab('report')}>
           📄 Phiếu giám định{submitted.length > 0 && <span className="tc-tab-count">{submitted.length}</span>}
         </button>
+        <button className={`tc-tab-btn ${activeTab === 'progress' ? 'tc-tab-active' : ''}`} onClick={() => setActiveTab('progress')}>
+          🔄 Tiến độ sửa chữa
+        </button>
       </div>
 
       {dangTai && <div style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>Đang tải...</div>}
@@ -166,7 +195,10 @@ export default function TechnicianDashboard({ nguoiDung, onDangXuat }) {
                       {task.status}
                     </span>
                   </div>
-                  <span className="tc-card-time">🕒 {task.assignedAt}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span className="tc-card-time">🕒 {task.assignedAt}</span>
+                    <button className="tc-btn-detail-sm" onClick={() => setDetailTarget(task)}>👁 Chi tiết</button>
+                  </div>
                 </div>
                 <h3 className="tc-card-customer">{task.customerName}</h3>
                 <p className="tc-card-machine">{task.machineModel}</p>
@@ -214,7 +246,10 @@ export default function TechnicianDashboard({ nguoiDung, onDangXuat }) {
                     <span className={`tc-priority ${PRIORITY_CLASS[task.priority] || ''}`}>{task.priority}</span>
                     <span className="tc-status-badge tc-st-onsite">Đã đến hiện trường</span>
                   </div>
-                  <span className="tc-card-time">🕒 {task.assignedAt}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span className="tc-card-time">🕒 {task.assignedAt}</span>
+                    <button className="tc-btn-detail-sm" onClick={() => setDetailTarget(task)}>👁 Chi tiết</button>
+                  </div>
                 </div>
                 <h3 className="tc-card-customer">{task.customerName}</h3>
                 <p className="tc-card-machine">{task.machineModel}</p>
@@ -246,13 +281,78 @@ export default function TechnicianDashboard({ nguoiDung, onDangXuat }) {
                     <span className="tc-card-id">#{task.malenh}</span>
                     <span className="tc-status-badge tc-st-submitted">✓ Đã nộp phiếu</span>
                   </div>
-                  <span className="tc-card-time">🕒 {task.assignedAt}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span className="tc-card-time">🕒 {task.assignedAt}</span>
+                    <button className="tc-btn-detail-sm" onClick={() => setDetailTarget(task)}>👁 Chi tiết</button>
+                  </div>
                 </div>
                 <h3 className="tc-card-customer">{task.customerName}</h3>
                 <p className="tc-card-machine">{task.machineModel}</p>
                 <div className="tc-card-meta"><span>📍 {task.location}</span></div>
               </div>
             ))
+          )}
+        </div>
+      )}
+
+      {/* Tab 4: Tiến độ sửa chữa */}
+      {activeTab === 'progress' && !dangTai && (
+        <div className="tc-section">
+          <h2 className="tc-section-title">Tiến độ sửa chữa ({all.length} lệnh)</h2>
+          {all.length === 0 ? <div className="tc-empty">Chưa có lệnh nào.</div> : (
+            all.map((task) => {
+              const currentStep = PROGRESS_STEPS.indexOf(task.status);
+              const khachDaDuyet = task.yeuCauStatus === 'Đã duyệt báo giá';
+              const choiBatDau   = khachDaDuyet && task.status === 'Đã nộp phiếu';
+              return (
+                <div key={task.malenh} className="tc-card">
+                  <div className="tc-card-top">
+                    <div className="tc-card-top-left">
+                      <span className="tc-card-id">#{task.malenh}</span>
+                      <span className={`tc-priority ${PRIORITY_CLASS[task.priority] || ''}`}>{task.priority}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span className="tc-card-time">🕒 {task.assignedAt}</span>
+                    <button className="tc-btn-detail-sm" onClick={() => setDetailTarget(task)}>👁 Chi tiết</button>
+                  </div>
+                  </div>
+                  <h3 className="tc-card-customer">{task.customerName}</h3>
+                  <p className="tc-card-machine">{task.machineModel}</p>
+                  <div className="tc-card-meta"><span>📍 {task.location}</span></div>
+                  <div className="tc-progress-stepper">
+                    {PROGRESS_STEPS.map((step, i) => {
+                      const done   = choiBatDau ? i <= 3 : i < currentStep;
+                      const active = !choiBatDau && i === currentStep;
+                      return (
+                        <React.Fragment key={step}>
+                          <div className={`tc-progress-node ${done ? 'tc-node-done' : active ? 'tc-node-active' : 'tc-node-pending'}`}>
+                            <div className="tc-node-circle">{done ? '✓' : i + 1}</div>
+                            <div className="tc-node-label">{step}</div>
+                          </div>
+                          {i < PROGRESS_STEPS.length - 1 && (
+                            <div className={`tc-progress-line ${done ? 'tc-line-done' : ''}`} />
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </div>
+                  {choiBatDau && (
+                    <div className="tc-card-footer">
+                      <button className="tc-btn-bat-dau-sua" onClick={() => handleBatDauSua(task.malenh)}>
+                        🔧 Bắt đầu sửa chữa
+                      </button>
+                    </div>
+                  )}
+                  {task.status === 'Đang sửa chữa' && (
+                    <div className="tc-card-footer">
+                      <button className="tc-btn-hoan-thanh" onClick={() => handleHoanThanh(task.malenh)}>
+                        ✅ Hoàn thành sửa chữa
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })
           )}
         </div>
       )}
@@ -273,6 +373,48 @@ export default function TechnicianDashboard({ nguoiDung, onDangXuat }) {
               <button className="tc-btn-confirm-green" onClick={handleConfirmReceive} disabled={dangGui}>
                 {dangGui ? '⏳...' : '✅ Xác nhận nhận lệnh'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Chi tiết phiếu yêu cầu */}
+      {detailTarget && (
+        <div className="tc-overlay" onClick={() => setDetailTarget(null)}>
+          <div className="tc-modal tc-modal-wide" onClick={(e) => e.stopPropagation()}>
+            <h3 className="tc-modal-title">📋 Chi tiết phiếu yêu cầu — #{detailTarget.mayeucau}</h3>
+            <div className="tc-detail-grid">
+              <div className="tc-detail-item">
+                <div className="tc-detail-lbl">Khách hàng</div>
+                <div className="tc-detail-val">{detailTarget.customerName}</div>
+              </div>
+              <div className="tc-detail-item">
+                <div className="tc-detail-lbl">Thiết bị / Model máy</div>
+                <div className="tc-detail-val">{detailTarget.machineModel}</div>
+              </div>
+              <div className="tc-detail-item tc-detail-full">
+                <div className="tc-detail-lbl">Vị trí công trường</div>
+                <div className="tc-detail-val">📍 {detailTarget.location}</div>
+              </div>
+              <div className="tc-detail-item">
+                <div className="tc-detail-lbl">Người liên hệ</div>
+                <div className="tc-detail-val">{detailTarget.nguoilienhe || '—'}</div>
+              </div>
+              <div className="tc-detail-item">
+                <div className="tc-detail-lbl">Số điện thoại</div>
+                <div className="tc-detail-val">
+                  {detailTarget.sodienthoai
+                    ? <a href={`tel:${detailTarget.sodienthoai}`} style={{ color: '#16a34a', fontWeight: 600 }}>📞 {detailTarget.sodienthoai}</a>
+                    : '—'}
+                </div>
+              </div>
+              <div className="tc-detail-item tc-detail-full">
+                <div className="tc-detail-lbl">Mô tả hư hỏng</div>
+                <div className="tc-detail-val" style={{ whiteSpace: 'pre-wrap' }}>{detailTarget.description}</div>
+              </div>
+            </div>
+            <div className="tc-modal-footer">
+              <button className="tc-btn-cancel" onClick={() => setDetailTarget(null)}>Đóng</button>
             </div>
           </div>
         </div>

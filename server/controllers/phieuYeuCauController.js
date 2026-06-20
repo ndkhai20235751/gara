@@ -13,7 +13,7 @@ const phieuYeuCauController = {
   // POST /api/phieu-yeu-cau — Khách hàng gửi phiếu mới
   taoPhieu: async (req, res) => {
     try {
-      const { modelmay, vitricongtruong, toado, motaloi } = req.body;
+      const { modelmay, vitricongtruong, nguoilienhe, sodienthoai, motaloi } = req.body;
       const makhachhang = await layMaKhachHang(req.nguoiDung);
 
       if (!makhachhang) {
@@ -23,7 +23,7 @@ const phieuYeuCauController = {
         });
       }
 
-      if (!modelmay || !vitricongtruong || !motaloi) {
+      if (!modelmay || !vitricongtruong || !sodienthoai || !motaloi) {
         return res.status(400).json({
           success: false,
           message: 'Vui lòng điền đầy đủ thông tin',
@@ -34,7 +34,8 @@ const phieuYeuCauController = {
         makhachhang,
         modelmay,
         vitricongtruong,
-        toado: toado || '',
+        nguoilienhe: nguoilienhe || '',
+        sodienthoai,
         motaloi,
         trangthai: 'Chờ tiếp nhận',
         thoigiangui: new Date().toISOString(),

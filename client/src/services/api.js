@@ -115,6 +115,20 @@ export const nopPhieuGiamDinh = async (data) => {
   } catch (error) { handleError(error); }
 };
 
+export const batDauSuaChua = async (malenh) => {
+  try {
+    const res = await axios.patch(`${API_URL}/tho/lenh/${malenh}/bat-dau`, {}, { headers: authHeader() });
+    return res.data;
+  } catch (error) { handleError(error); }
+};
+
+export const hoanThanhSuaChua = async (malenh) => {
+  try {
+    const res = await axios.patch(`${API_URL}/tho/lenh/${malenh}/hoan-thanh`, {}, { headers: authHeader() });
+    return res.data;
+  } catch (error) { handleError(error); }
+};
+
 // ─── KẾ TOÁN ───────────────────────────────────────────────────────────────────
 
 export const layPhieuChoBaoGia = async () => {
@@ -194,6 +208,13 @@ export const pheDuyetBaoGia = async (mabaogia) => {
 export const yeuCauDieuChinhBaoGia = async (mabaogia, lydo) => {
   try {
     const res = await axios.post(`${API_URL}/khach-hang/bao-gia/${mabaogia}/dieu-chinh`, { lydo }, { headers: authHeader() });
+    return res.data;
+  } catch (error) { handleError(error); }
+};
+
+export const xacNhanNghiemThu = async (mayeucau) => {
+  try {
+    const res = await axios.post(`${API_URL}/khach-hang/yeu-cau/${mayeucau}/nghiem-thu`, {}, { headers: authHeader() });
     return res.data;
   } catch (error) { handleError(error); }
 };

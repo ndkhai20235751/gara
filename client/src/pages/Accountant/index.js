@@ -16,6 +16,7 @@ export default function AccountantDashboard({ nguoiDung, onDangXuat }) {
   const [showBaoGia, setShowBaoGia]     = useState(false);
   const [selectedPhieu, setSelectedPhieu] = useState(null);
   const [dangGui, setDangGui]           = useState(false);
+  const [detailTarget, setDetailTarget] = useState(null);
 
   const taiDuLieu = useCallback(async () => {
     setDangTai(true);
@@ -282,6 +283,9 @@ export default function AccountantDashboard({ nguoiDung, onDangXuat }) {
                       </span>
                     </div>
                     <div className="invoice-actions">
+                      <button onClick={() => setDetailTarget(pyc)} className="btn-acc-detail">
+                        👁 Chi tiết
+                      </button>
                       {!daBaoGiaRoi ? (
                         <button onClick={() => handleMoBaoGia(phieu)} className="btn-create">
                           📝 Tạo báo giá
@@ -326,6 +330,51 @@ export default function AccountantDashboard({ nguoiDung, onDangXuat }) {
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Chi tiết phiếu yêu cầu */}
+      {detailTarget && (
+        <div className="acc-modal-overlay" onClick={() => setDetailTarget(null)}>
+          <div className="acc-modal-box" onClick={(e) => e.stopPropagation()}>
+            <div className="acc-modal-head">
+              <h3>📋 Chi tiết phiếu yêu cầu</h3>
+              <button className="acc-modal-close" onClick={() => setDetailTarget(null)}>×</button>
+            </div>
+            <div className="acc-detail-grid">
+              <div className="acc-detail-item">
+                <div className="acc-detail-lbl">Khách hàng</div>
+                <div className="acc-detail-val">{detailTarget?.khach_hang?.tencongty || '—'}</div>
+              </div>
+              <div className="acc-detail-item">
+                <div className="acc-detail-lbl">Thiết bị / Model máy</div>
+                <div className="acc-detail-val">{detailTarget?.modelmay || '—'}</div>
+              </div>
+              <div className="acc-detail-item acc-detail-full">
+                <div className="acc-detail-lbl">Vị trí công trường</div>
+                <div className="acc-detail-val">📍 {detailTarget?.vitricongtruong || '—'}</div>
+              </div>
+              <div className="acc-detail-item">
+                <div className="acc-detail-lbl">Người liên hệ</div>
+                <div className="acc-detail-val">{detailTarget?.nguoilienhe || '—'}</div>
+              </div>
+              <div className="acc-detail-item">
+                <div className="acc-detail-lbl">Số điện thoại</div>
+                <div className="acc-detail-val">
+                  {detailTarget?.sodienthoai
+                    ? <a href={`tel:${detailTarget.sodienthoai}`} style={{ color: '#16a34a', fontWeight: 600 }}>📞 {detailTarget.sodienthoai}</a>
+                    : '—'}
+                </div>
+              </div>
+              <div className="acc-detail-item acc-detail-full">
+                <div className="acc-detail-lbl">Mô tả hư hỏng</div>
+                <div className="acc-detail-val" style={{ whiteSpace: 'pre-wrap' }}>{detailTarget?.motaloi || '—'}</div>
+              </div>
+            </div>
+            <div className="acc-modal-footer">
+              <button className="btn-acc-close" onClick={() => setDetailTarget(null)}>Đóng</button>
+            </div>
           </div>
         </div>
       )}

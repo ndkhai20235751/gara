@@ -162,13 +162,16 @@ const chuXuongController = {
   suaBaoGia: async (req, res) => {
     try {
       const { mabaogia } = req.params;
-      const { chiphinhancong, chiphiphutung, chiphikhac, tongcong, noidung } = req.body;
+      const { chiphinhancong, chiphiphutung, chiphikhac, tongcong, noidung, tendonvi, diachidonvi, sodienthoaidonvi } = req.body;
       const updated = await PhieuBaoGiaModel.updateChiPhi(mabaogia, {
         chiphinhancong: Number(chiphinhancong) || 0,
         chiphiphutung:  Number(chiphiphutung)  || 0,
         chiphikhac:     Number(chiphikhac)     || 0,
         tongcong:       Number(tongcong)        || 0,
         ...(noidung !== undefined && { noidung }),
+        ...(tendonvi !== undefined && { tendonvi }),
+        ...(diachidonvi !== undefined && { diachidonvi }),
+        ...(sodienthoaidonvi !== undefined && { sodienthoaidonvi }),
       });
       return res.json({ success: true, baogia: updated });
     } catch (err) {

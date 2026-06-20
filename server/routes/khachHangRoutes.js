@@ -7,5 +7,6 @@ router.get('/bao-gia',                           xacThucToken, khachHangControll
 router.get('/bao-gia/:mabaogia',                xacThucToken, khachHangController.layChiTietBaoGia);
 router.post('/bao-gia/:mabaogia/duyet',         xacThucToken, khachHangController.pheDuyetBaoGia);
 router.post('/bao-gia/:mabaogia/dieu-chinh',    xacThucToken, khachHangController.yeuCauDieuChinh);
+router.post('/yeu-cau/:mayeucau/nghiem-thu',    xacThucToken, khachHangController.xacNhanNghiemThu);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const KhachHangModel = require('../models/khachHangModel');
+const { supabase } = require('../config/superbase');
 
 const khachHangController = {
   // GET /api/khach-hang/bao-gia - Lấy danh sách báo giá của khách hàng
@@ -87,6 +88,50 @@ const khachHangController = {
       return res.json({ success: true, message: 'Đã gửi yêu cầu điều chỉnh', baogia: result });
     } catch (err) {
       console.error('Lỗi yeuCauDieuChinh:', err);
+      return res.status(500).json({ success: false, message: err.message });
+    }
+  },
+  // POST /api/khach-hang/yeu-cau/:mayeucau/nghiem-thu — Khách xác nhận nghiệm thu
+  xacNhanNghiemThu: async (req, res) => {
+    try {
+      const { mayeucau } = req.params;
+      const makhachhang = req.nguoiDung.makhachhang;
+
+      // Kiểm tra yêu cầu thuộc khách hàng này và đã hoàn thành
+      const { data: pyc } = await supabase
+        .from('phieu_yeu_cau')
+        .select('makhachhang, trangthai')
+        .eq('mayeucau', mayeucau)
+        .maybeSingle();
+
+      if (!pyc) return res.status(404).json({ success: false, message: 'Không tìm thấy yêu cầu' });
+      if (pyc.makhachhang !== makhachhang) return res.status(403).json({ success: false, message: 'Không có quyền' });
+      if (pyc.trangthai !== 'Hoàn thành') return res.status(400).json({ success: false, message: 'Yêu cầu chưa hoàn thành' });
+
+      // Tìm malenh để tạo biên bản nghiệm thu
+      const { data: lenh } = await supabase
+        .from('lenh_sua_chua')
+        .select('malenh')
+        .eq('mayeucau', mayeucau)
+        .maybeSingle();
+
+      if (lenh?.malenh) {
+        await supabase.from('nghiem_thu').insert([{
+          malenh:             lenh.malenh,
+          thoigianhoanthanh:  new Date().toISOString(),
+          nguoixacnhan:       req.nguoiDung.email || 'Khách hàng',
+          ghichu:             'Khách hàng xác nhận hoàn thành sửa chữa qua cổng thông tin',
+        }]);
+      }
+
+      // Cập nhật trạng thái phiếu yêu cầu
+      await supabase
+        .from('phieu_yeu_cau')
+        .update({ trangthai: 'Khách đã nghiệm thu' })
+        .eq('mayeucau', mayeucau);
+
+      return res.json({ success: true });
+    } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
     }
   },

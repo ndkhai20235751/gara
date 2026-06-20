@@ -158,6 +158,46 @@ const thoKyThuatController = {
       return res.status(500).json({ success: false, message: err.message });
     }
   },
+
+  // PATCH /api/tho/lenh/:malenh/hoan-thanh — Hoàn thành sửa chữa
+  hoanThanhSuaChua: async (req, res) => {
+    try {
+      const { malenh } = req.params;
+      await LenhSuaChuaModel.updateTrangThai(malenh, 'Hoàn thành');
+
+      const lenh = await LenhSuaChuaModel.getByMalenh(malenh);
+      if (lenh?.mayeucau) {
+        await supabase
+          .from('phieu_yeu_cau')
+          .update({ trangthai: 'Hoàn thành' })
+          .eq('mayeucau', lenh.mayeucau);
+      }
+
+      return res.json({ success: true });
+    } catch (err) {
+      return res.status(500).json({ success: false, message: err.message });
+    }
+  },
+
+  // PATCH /api/tho/lenh/:malenh/bat-dau — Bắt đầu sửa chữa sau khi khách duyệt báo giá
+  batDauSuaChua: async (req, res) => {
+    try {
+      const { malenh } = req.params;
+      await LenhSuaChuaModel.updateTrangThai(malenh, 'Đang sửa chữa');
+
+      const lenh = await LenhSuaChuaModel.getByMalenh(malenh);
+      if (lenh?.mayeucau) {
+        await supabase
+          .from('phieu_yeu_cau')
+          .update({ trangthai: 'Đang sửa chữa' })
+          .eq('mayeucau', lenh.mayeucau);
+      }
+
+      return res.json({ success: true });
+    } catch (err) {
+      return res.status(500).json({ success: false, message: err.message });
+    }
+  },
 };
 
 module.exports = thoKyThuatController;

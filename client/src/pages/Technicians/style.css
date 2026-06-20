@@ -196,6 +196,38 @@
   margin-top: 1rem; padding-top: 0.875rem;
   border-top: 1px solid #f1f5f9;
 }
+.tc-btn-detail-sm {
+  padding: 0.2rem 0.6rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tc-btn-detail-sm:hover { background: #dbeafe; }
+
+.tc-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.tc-detail-full { grid-column: 1 / -1; }
+.tc-detail-lbl {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+.tc-detail-val {
+  font-size: 0.9rem;
+  color: #1e293b;
+  font-weight: 500;
+}
+
 .tc-btn-confirm {
   background: #16a34a; color: white; border: none;
   padding: 0.5rem 1rem; font-weight: 600; font-size: 0.875rem;
@@ -293,3 +325,78 @@
   border-radius: 0.375rem; cursor: pointer;
 }
 .tc-btn-submit-green:hover { background: #15803d; }
+
+/* PROGRESS STEPPER (Tab 4) */
+.tc-progress-stepper {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 1.25rem;
+  padding: 0.5rem 0 0.25rem;
+  overflow-x: auto;
+}
+.tc-progress-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 76px;
+}
+.tc-node-circle {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 700;
+  border: 2px solid #e2e8f0;
+  background: white;
+  color: #94a3b8;
+  transition: all 0.2s;
+}
+.tc-node-label {
+  font-size: 0.68rem; text-align: center;
+  color: #94a3b8; margin-top: 0.4rem;
+  max-width: 76px; line-height: 1.35;
+}
+.tc-node-done .tc-node-circle  { background: #16a34a; border-color: #16a34a; color: white; }
+.tc-node-done .tc-node-label   { color: #16a34a; font-weight: 600; }
+.tc-node-active .tc-node-circle {
+  background: #2563eb; border-color: #2563eb; color: white;
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.15);
+}
+.tc-node-active .tc-node-label { color: #2563eb; font-weight: 700; }
+.tc-node-pending .tc-node-circle { background: #f8fafc; border-color: #e2e8f0; color: #cbd5e1; }
+.tc-node-pending .tc-node-label  { color: #cbd5e1; }
+.tc-progress-line {
+  flex: 1;
+  height: 2px;
+  background: #e2e8f0;
+  margin-top: 16px;
+  min-width: 16px;
+  transition: background 0.2s;
+}
+.tc-line-done { background: #16a34a; }
+
+.tc-btn-bat-dau-sua {
+  background: #16a34a; color: white; border: none;
+  padding: 0.6rem 1.5rem; font-weight: 700; font-size: 0.9rem;
+  border-radius: 0.5rem; cursor: pointer; width: 100%;
+  text-align: center; letter-spacing: 0.02em;
+  box-shadow: 0 2px 8px rgba(22,163,74,0.25);
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.tc-btn-bat-dau-sua:hover {
+  background: #15803d;
+  box-shadow: 0 4px 12px rgba(22,163,74,0.35);
+}
+
+.tc-btn-hoan-thanh {
+  background: #0369a1; color: white; border: none;
+  padding: 0.6rem 1.5rem; font-weight: 700; font-size: 0.9rem;
+  border-radius: 0.5rem; cursor: pointer; width: 100%;
+  text-align: center; letter-spacing: 0.02em;
+  box-shadow: 0 2px 8px rgba(3,105,161,0.25);
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.tc-btn-hoan-thanh:hover {
+  background: #075985;
+  box-shadow: 0 4px 12px rgba(3,105,161,0.35);
+}
