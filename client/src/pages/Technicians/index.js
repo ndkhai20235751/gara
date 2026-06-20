@@ -37,11 +37,13 @@ export default function TechnicianDashboard({ nguoiDung, onDangXuat }) {
   useEffect(() => { taiDuLieu(); }, [taiDuLieu]);
 
   useEffect(() => {
-    socket.connect();
     socket.on('lenh_thay_doi', taiDuLieu);
+    socket.on('yeu_cau_thay_doi', taiDuLieu);
+    socket.on('bao_gia_thay_doi', taiDuLieu);
     return () => {
       socket.off('lenh_thay_doi', taiDuLieu);
-      socket.disconnect();
+      socket.off('yeu_cau_thay_doi', taiDuLieu);
+      socket.off('bao_gia_thay_doi', taiDuLieu);
     };
   }, [taiDuLieu]);
 

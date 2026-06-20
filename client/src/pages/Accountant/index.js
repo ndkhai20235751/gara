@@ -49,13 +49,11 @@ export default function AccountantDashboard({ nguoiDung, onDangXuat }) {
   useEffect(() => { taiYeuCauDieuChinh(); }, [taiYeuCauDieuChinh]);
 
   useEffect(() => {
-    socket.connect();
     socket.on('lenh_thay_doi', taiDuLieu);
     socket.on('bao_gia_thay_doi', taiYeuCauDieuChinh);
     return () => {
       socket.off('lenh_thay_doi', taiDuLieu);
       socket.off('bao_gia_thay_doi', taiYeuCauDieuChinh);
-      socket.disconnect();
     };
   }, [taiDuLieu, taiYeuCauDieuChinh]);
 

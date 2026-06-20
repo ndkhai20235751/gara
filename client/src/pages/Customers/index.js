@@ -166,13 +166,11 @@ export default function CustomerDashboard({ onDangXuat }) {
   useEffect(() => { taiOrders(); }, [taiOrders]);
 
   useEffect(() => {
-    socket.connect();
     socket.on('yeu_cau_thay_doi', taiOrders);
     socket.on('bao_gia_thay_doi', taiBaoGia);
     return () => {
       socket.off('yeu_cau_thay_doi', taiOrders);
       socket.off('bao_gia_thay_doi', taiBaoGia);
-      socket.disconnect();
     };
   }, [taiOrders, taiBaoGia]);
   
