@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './style.css';
 import { layLenhCuaTho, nhanLenh, denHienTruong, nopPhieuGiamDinh, batDauSuaChua, hoanThanhSuaChua } from '../../services/api';
+import socket from '../../services/socket';
 
 const emptyReport = { sogiodongho: '', chandoan: '', phutung: '', giocong: '', ghichu: '' };
 const PRIORITY_CLASS = { 'Khẩn cấp': 'tc-pri-urgent', 'Trung bình': 'tc-pri-medium', 'Thấp': 'tc-pri-low' };
@@ -34,6 +35,15 @@ export default function TechnicianDashboard({ nguoiDung, onDangXuat }) {
   }, []);
 
   useEffect(() => { taiDuLieu(); }, [taiDuLieu]);
+
+  useEffect(() => {
+    socket.connect();
+    socket.on('lenh_thay_doi', taiDuLieu);
+    return () => {
+      socket.off('lenh_thay_doi', taiDuLieu);
+      socket.disconnect();
+    };
+  }, [taiDuLieu]);
 
   // Giải nén dữ liệu từ join Supabase
   const normalize = (t) => ({

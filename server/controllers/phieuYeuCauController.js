@@ -1,5 +1,6 @@
 const PhieuYeuCauModel=require('../models/phieuYeuCauModel');
 const KhachHangModel=require('../models/khachHangModel');
+const { emit } = require('../utils/socket');
 
 const layMaKhachHang = async (nguoiDungToken) => {
   if (nguoiDungToken.makhachhang) return nguoiDungToken.makhachhang;
@@ -41,6 +42,7 @@ const phieuYeuCauController = {
         thoigiangui: new Date().toISOString(),
       });
 
+      emit('yeu_cau_thay_doi');
       return res.status(201).json({
         success: true,
         message: 'Gửi yêu cầu thành công',

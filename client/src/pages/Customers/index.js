@@ -1,10 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './style.css';
 import BaoGia from '../Accountant/Popus/BaoGia';
 import { guiYeuCau, layDanhSachYeuCau, layBaoGiaKhachHang, layChiTietBaoGiaKhachHang, pheDuyetBaoGia, yeuCauDieuChinhBaoGia, xacNhanNghiemThu } from '../../services/api';
+import socket from '../../services/socket';
 
-const STATUS_STEPS = ['Chờ tiếp nhận', 'Đã tiếp nhận', 'Đã phân công', 'Đang kiểm tra', 'Hoàn thành'];
-const STATUS_INDEX = { 'Chờ tiếp nhận': 0, 'Đã tiếp nhận': 1, 'Đã phân công': 2, 'Đang kiểm tra': 3, 'Hoàn thành': 4 };
+const STATUS_STEPS = ['Chờ tiếp nhận', 'Đã tiếp nhận', 'Đã phân công', 'Đang kiểm tra', 'Đang sửa chữa', 'Hoàn thành'];
+const STATUS_INDEX = {
+  'Chờ tiếp nhận': 0,
+  'Đã tiếp nhận': 1,
+  'Đã phân công': 2,
+  'Đang kiểm tra': 3,
+  'Chờ báo giá': 3,
+  'Chờ khách duyệt': 3,
+  'Đã duyệt báo giá': 3,
+  'Chờ phê duyệt lại': 3,
+  'Đang sửa chữa': 4,
+  'Hoàn thành': 5,
+  'Khách đã nghiệm thu': 5,
+};
 
 const emptyForm = { modelmay: '', vitricongtruong: '', nguoilienhe: '', sodienthoai: '', motaloi: '' };
 
@@ -28,14 +41,19 @@ export default function CustomerDashboard({ onDangXuat }) {
   const [showConfirmNghiemThu, setShowConfirmNghiemThu] = useState(false);
   const [nghiemThuTarget, setNghiemThuTarget] = useState(null);
 
-  // Load báo giá khi vào tab báo giá
-  useEffect(() => {
-    if (activeTab === 'quotes') {
-      taiBaoGia();
+  const taiOrders = useCallback(async () => {
+    setDangTai(true);
+    try {
+      const ketQua = await layDanhSachYeuCau();
+      setOrders(ketQua.danhSach || []);
+    } catch (error) {
+      setLoiApi('Không tải được danh sách: ' + error.message);
+    } finally {
+      setDangTai(false);
     }
-  }, [activeTab]);
+  }, []);
 
-  const taiBaoGia = async () => {
+  const taiBaoGia = useCallback(async () => {
     setDangTai(true);
     try {
       const res = await layBaoGiaKhachHang();
@@ -45,7 +63,14 @@ export default function CustomerDashboard({ onDangXuat }) {
     } finally {
       setDangTai(false);
     }
-  };
+  }, []);
+
+  // Load báo giá khi vào tab báo giá
+  useEffect(() => {
+    if (activeTab === 'quotes') {
+      taiBaoGia();
+    }
+  }, [activeTab, taiBaoGia]);
 
   // Mở chi tiết báo giá
   const handleXemBaoGia = async (bg) => {
@@ -138,20 +163,18 @@ export default function CustomerDashboard({ onDangXuat }) {
   const totalDone = orders.filter((o) => ['Hoàn thành', 'Khách đã nghiệm thu'].includes(o.trangthai)).length;
   const totalActive = orders.filter((o) => !['Hoàn thành', 'Khách đã nghiệm thu', 'Từ chối'].includes(o.trangthai)).length;
   
-   useEffect(() => {
-  const taiDuLieu = async () => {
-    setDangTai(true);
-    try {
-      const ketQua = await layDanhSachYeuCau();
-      setOrders(ketQua.danhSach || []);
-    } catch (error) {
-      setLoiApi('Không tải được danh sách: ' + error.message);
-    } finally {
-      setDangTai(false);
-    }
-  };
-  taiDuLieu();
-}, []);
+  useEffect(() => { taiOrders(); }, [taiOrders]);
+
+  useEffect(() => {
+    socket.connect();
+    socket.on('yeu_cau_thay_doi', taiOrders);
+    socket.on('bao_gia_thay_doi', taiBaoGia);
+    return () => {
+      socket.off('yeu_cau_thay_doi', taiOrders);
+      socket.off('bao_gia_thay_doi', taiBaoGia);
+      socket.disconnect();
+    };
+  }, [taiOrders, taiBaoGia]);
   
 
 

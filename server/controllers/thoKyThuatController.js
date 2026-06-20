@@ -2,6 +2,7 @@ const { supabase } = require('../config/superbase');
 const ThoKyThuatModel = require('../models/thoModel');
 const LenhSuaChuaModel = require('../models/lenhSuaChuaModel');
 const PhieuBaoKhamModel = require('../models/phieuBaoKhamModel');
+const { emit } = require('../utils/socket');
 
 const thoKyThuatController = {
 
@@ -90,6 +91,7 @@ const thoKyThuatController = {
     try {
       const { malenh } = req.params;
       await LenhSuaChuaModel.updateTrangThai(malenh, 'Đã nhận lệnh');
+      emit('lenh_thay_doi');
       return res.json({ success: true });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
@@ -111,6 +113,8 @@ const thoKyThuatController = {
           .eq('mayeucau', lenh.mayeucau);
       }
 
+      emit('lenh_thay_doi');
+      emit('yeu_cau_thay_doi');
       return res.json({ success: true });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
@@ -153,6 +157,8 @@ const thoKyThuatController = {
         .update({ trangthai: 'Chờ báo giá' })
         .eq('mayeucau', mayeucau);
 
+      emit('lenh_thay_doi');
+      emit('yeu_cau_thay_doi');
       return res.status(201).json({ success: true, phieu });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
@@ -173,6 +179,8 @@ const thoKyThuatController = {
           .eq('mayeucau', lenh.mayeucau);
       }
 
+      emit('lenh_thay_doi');
+      emit('yeu_cau_thay_doi');
       return res.json({ success: true });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
@@ -193,6 +201,8 @@ const thoKyThuatController = {
           .eq('mayeucau', lenh.mayeucau);
       }
 
+      emit('lenh_thay_doi');
+      emit('yeu_cau_thay_doi');
       return res.json({ success: true });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });

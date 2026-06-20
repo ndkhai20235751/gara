@@ -1,6 +1,7 @@
 const { supabase } = require('../config/superbase');
 const PhieuBaoKhamModel = require('../models/phieuBaoKhamModel');
 const KeToanModel = require('../models/keToanModel');
+const { emit } = require('../utils/socket');
 
 const keToanController = {
 
@@ -163,8 +164,10 @@ const keToanController = {
         .update({ trangthai: trangthaiPYC })
         .eq('mayeucau', mayeucau);
 
-      return res.status(201).json({ 
-        success: true, 
+      emit('bao_gia_thay_doi');
+      emit('yeu_cau_thay_doi');
+      return res.status(201).json({
+        success: true,
         baogia: data[0],
         guiLaiKhach: guiLaiKhach
       });

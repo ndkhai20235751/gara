@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './style.css';
 import BaoGia from './Popus/BaoGia';
 import { layPhieuChoBaoGia, taoBaoGia, layYeuCauDieuChinh, layChiTietBaoGiaDieuChinh } from '../../services/api';
+import socket from '../../services/socket';
 
 export default function AccountantDashboard({ nguoiDung, onDangXuat }) {
   const [phieuList, setPhieuList] = useState([]);
@@ -46,6 +47,17 @@ export default function AccountantDashboard({ nguoiDung, onDangXuat }) {
 
   useEffect(() => { taiDuLieu(); }, [taiDuLieu]);
   useEffect(() => { taiYeuCauDieuChinh(); }, [taiYeuCauDieuChinh]);
+
+  useEffect(() => {
+    socket.connect();
+    socket.on('lenh_thay_doi', taiDuLieu);
+    socket.on('bao_gia_thay_doi', taiYeuCauDieuChinh);
+    return () => {
+      socket.off('lenh_thay_doi', taiDuLieu);
+      socket.off('bao_gia_thay_doi', taiYeuCauDieuChinh);
+      socket.disconnect();
+    };
+  }, [taiDuLieu, taiYeuCauDieuChinh]);
 
   // Xem chi tiết yêu cầu điều chỉnh
   const handleXemYeuCau = async (item) => {

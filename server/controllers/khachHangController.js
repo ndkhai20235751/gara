@@ -1,5 +1,6 @@
 const KhachHangModel = require('../models/khachHangModel');
 const { supabase } = require('../config/superbase');
+const { emit } = require('../utils/socket');
 
 const khachHangController = {
   // GET /api/khach-hang/bao-gia - Lấy danh sách báo giá của khách hàng
@@ -60,6 +61,8 @@ const khachHangController = {
       }
 
       const result = await KhachHangModel.pheDuyetBaoGia(mabaogia);
+      emit('bao_gia_thay_doi');
+      emit('yeu_cau_thay_doi');
       return res.json({ success: true, message: 'Đã phê duyệt báo giá', baogia: result });
     } catch (err) {
       console.error('Lỗi pheDuyetBaoGia:', err);
@@ -85,6 +88,7 @@ const khachHangController = {
       }
 
       const result = await KhachHangModel.yeuCauDieuChinh(mabaogia, lydo);
+      emit('bao_gia_thay_doi');
       return res.json({ success: true, message: 'Đã gửi yêu cầu điều chỉnh', baogia: result });
     } catch (err) {
       console.error('Lỗi yeuCauDieuChinh:', err);
@@ -130,6 +134,7 @@ const khachHangController = {
         .update({ trangthai: 'Khách đã nghiệm thu' })
         .eq('mayeucau', mayeucau);
 
+      emit('yeu_cau_thay_doi');
       return res.json({ success: true });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });

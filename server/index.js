@@ -1,16 +1,30 @@
 
-require('dotenv').config(); 
+require('dotenv').config();
 
+const http = require('http');
 const express = require('express');
 const cors = require('cors');
+const { Server } = require('socket.io');
+const { setIO } = require('./utils/socket');
 
 const app = express();
+const server = http.createServer(app);
 
 // Định nghĩa PORT và có thêm cổng 5000 dự phòng nếu file .env bị lỗi
-const port = process.env.PORT ; 
+const port = process.env.PORT ;
 
 const superbases=require('./config/superbase');
 superbases.kiemTraKetNoiSupabase();
+
+// Socket.io
+const io = new Server(server, {
+  cors: { origin: 'http://localhost:3000', methods: ['GET', 'POST'] }
+});
+setIO(io);
+io.on('connection', (socket) => {
+  console.log('🔌 Client kết nối:', socket.id);
+  socket.on('disconnect', () => console.log('🔌 Client ngắt kết nối:', socket.id));
+});
 
 // 3. CÁC MIDDLEWARE CỦA EXPRESS (Nên đặt trước các Route API)
 app.use(cors({
@@ -74,7 +88,7 @@ app.get('/api/fix-passwords', async (req, res) => {
 });
 
 // 5. KHỞI ĐỘNG SERVER
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`🚀 Server Gara đang chạy mượt mà tại cổng: http://localhost:${port}`);
 });
 

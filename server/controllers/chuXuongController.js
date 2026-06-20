@@ -4,6 +4,7 @@ const ThoKyThuatModel = require('../models/thoModel');
 const ChuXuongModel = require('../models/chuXuongModel');
 const PhieuBaoGiaModel = require('../models/phieuBaoGiaModel');
 const { guiBaoGiaKhachHang } = require('../services/emailService');
+const { emit } = require('../utils/socket');
 
 const chuXuongController = {
 
@@ -72,6 +73,8 @@ const chuXuongController = {
         trangthai: 'Chờ nhận',
       });
 
+      emit('yeu_cau_thay_doi');
+      emit('lenh_thay_doi');
       return res.status(201).json({ success: true, lenh });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
@@ -87,6 +90,7 @@ const chuXuongController = {
         .update({ trangthai: 'Từ chối' })
         .eq('mayeucau', mayeucau);
       if (error) throw error;
+      emit('yeu_cau_thay_doi');
       return res.json({ success: true });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
@@ -122,6 +126,7 @@ const chuXuongController = {
         .update({ trangthai })
         .eq('mayeucau', mayeucau);
       if (error) throw error;
+      emit('yeu_cau_thay_doi');
       return res.json({ success: true });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
@@ -173,6 +178,7 @@ const chuXuongController = {
         ...(diachidonvi !== undefined && { diachidonvi }),
         ...(sodienthoaidonvi !== undefined && { sodienthoaidonvi }),
       });
+      emit('bao_gia_thay_doi');
       return res.json({ success: true, baogia: updated });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
@@ -209,6 +215,8 @@ const chuXuongController = {
         }
       }
 
+      emit('bao_gia_thay_doi');
+      emit('yeu_cau_thay_doi');
       return res.json({ success: true, baogia: baoGia });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });

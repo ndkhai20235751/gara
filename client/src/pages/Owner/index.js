@@ -4,6 +4,7 @@ import {
   layTatCaYeuCau, layDanhSachTho, duyetVaPhanCong, tuChoiYeuCau, capNhatTrangThaiYeuCau,
   layBaoGiaChuXuong, layChiTietBaoGia, suaBaoGia, duyetVaGuiKhach,
 } from '../../services/api';
+import socket from '../../services/socket';
 import PhanCongCongViec from './PhanCongCongViec';
 import BaoGia from '../Accountant/Popus/BaoGia';
 
@@ -65,6 +66,17 @@ export default function OwnerDashboard({ nguoiDung, onDangXuat }) {
   }, []);
 
   useEffect(() => { taiDuLieu(); }, [taiDuLieu]);
+
+  useEffect(() => {
+    socket.connect();
+    socket.on('yeu_cau_thay_doi', taiDuLieu);
+    socket.on('bao_gia_thay_doi', taiDuLieu);
+    return () => {
+      socket.off('yeu_cau_thay_doi', taiDuLieu);
+      socket.off('bao_gia_thay_doi', taiDuLieu);
+      socket.disconnect();
+    };
+  }, [taiDuLieu]);
 
   const pending  = requests.filter((r) => isPending(r.trangthai));
   const assigned = requests.filter((r) => !isPending(r.trangthai) && r.trangthai !== 'Từ chối');
